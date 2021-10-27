@@ -64,3 +64,39 @@ func TestUnpackFourSymForTwo(t *testing.T) {
 		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
 	}
 }
+
+func TestUnpackMatchCount(t *testing.T) {
+	text := "a10"
+	expected := "aaaaaaaaaa"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
+
+func TestUnpackMatchCountAndAlone(t *testing.T) {
+	text := "a10b"
+	expected := "aaaaaaaaaab"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
+
+func TestUnpackMatchCountAndAlone2(t *testing.T) {
+	text := "a10b1"
+	expected := "aaaaaaaaaab"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
+
+func TestUnpackMatchCountAndAlone3(t *testing.T) {
+	text := "a10b2"
+	expected := "aaaaaaaaaabb"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}

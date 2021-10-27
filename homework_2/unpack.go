@@ -12,19 +12,29 @@ func Unpack(s string) string {
 	if 0 == len(s) {
 		return unpackString.String()
 	}
-	var lastRune rune = -1
+	var lastRune rune
+	var startCounter int
 
-	for i := 0; i < len(s); i++ {
-		if unicode.IsDigit(rune(s[i])) {
-			counter, _ := strconv.ParseInt(string(s[i]), 10, 32)
-			if counter > 1 {
-				temp := strings.Repeat(string(lastRune), int(counter-1))
-				unpackString.WriteString(temp)
+	for index, value := range s {
+		if unicode.IsDigit(rune(value)) {
+			if 0 == startCounter {
+				startCounter = index
 			}
 		} else {
-			unpackString.WriteRune(rune(s[i]))
-			lastRune = rune(s[i])
+			if 0 != startCounter {
+				counter, _ := strconv.ParseInt(string(s[startCounter:index]), 10, 32)
+				temp := strings.Repeat(string(lastRune), int(counter-1))
+				unpackString.WriteString(temp)
+				startCounter = 0
+			}
+			unpackString.WriteRune(rune(value))
+			lastRune = rune(value)
 		}
+	}
+	if 0 != startCounter {
+		counter, _ := strconv.ParseInt(string(s[startCounter:]), 10, 32)
+		temp := strings.Repeat(string(lastRune), int(counter-1))
+		unpackString.WriteString(temp)
 	}
 
 	return unpackString.String()
