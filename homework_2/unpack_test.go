@@ -46,3 +46,21 @@ func TestUnpackTwoSymTwo(t *testing.T) {
 		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
 	}
 }
+
+func TestUnpackTwoSymForTwo(t *testing.T) {
+	text := "a2b3"
+	expected := "aabbb"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
+
+func TestUnpackFourSymForTwo(t *testing.T) {
+	text := "a2b3c4d"
+	expected := "aabbbccccd"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
