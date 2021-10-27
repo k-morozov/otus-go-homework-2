@@ -22,8 +22,7 @@ func Unpack(s string) string {
 			}
 		} else {
 			if 0 != startCounter {
-				counter, _ := strconv.ParseInt(string(s[startCounter:index]), 10, 32)
-				temp := strings.Repeat(string(lastRune), int(counter-1))
+				temp := unpackIntervalImpl([]rune(s[startCounter:index]), lastRune)
 				unpackString.WriteString(temp)
 				startCounter = 0
 			}
@@ -32,10 +31,15 @@ func Unpack(s string) string {
 		}
 	}
 	if 0 != startCounter {
-		counter, _ := strconv.ParseInt(string(s[startCounter:]), 10, 32)
-		temp := strings.Repeat(string(lastRune), int(counter-1))
+		temp := unpackIntervalImpl([]rune(s[startCounter:]), lastRune)
 		unpackString.WriteString(temp)
 	}
 
 	return unpackString.String()
+}
+
+func unpackIntervalImpl(s []rune, lastRune rune) string {
+	counter, _ := strconv.ParseInt(string(s[:]), 10, 32)
+	temp := strings.Repeat(string(lastRune), int(counter-1))
+	return temp
 }

@@ -2,6 +2,24 @@ package homework_2
 
 import "testing"
 
+func TestUnpackTask1(t *testing.T) {
+	text := "a4bc2d5e"
+	expected := "aaaabccddddde"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
+
+func TestUnpackTask2(t *testing.T) {
+	text := "abcd"
+	expected := "abcd"
+
+	if result := Unpack(text); result != expected {
+		t.Fatalf("bad unpack for [%s]: got %s, expected %s", text, result, expected)
+	}
+}
+
 func TestUnpackSimpleEmpty(t *testing.T) {
 	text := ""
 	expected := ""
