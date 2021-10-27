@@ -8,6 +8,5 @@ import (
 func main() {
 	fmt.Println("Hello world!")
 	count := foobar.Count("abcdea", 'a')
-
 	fmt.Println(count)
 }
