@@ -20,7 +20,7 @@ func Unpack(s string) string {
 			if 0 == startCounter {
 				startCounter = index
 			}
-		} else {
+		} else if unicode.IsLetter(value) {
 			if 0 != startCounter {
 				temp := unpackIntervalImpl([]rune(s[startCounter:index]), lastRune)
 				unpackString.WriteString(temp)
