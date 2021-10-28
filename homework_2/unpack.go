@@ -16,7 +16,7 @@ func Unpack(s string) string {
 	var startCounter int
 
 	for index, value := range s {
-		if unicode.IsDigit(rune(value)) {
+		if unicode.IsDigit(value) {
 			if 0 == startCounter {
 				startCounter = index
 			}
@@ -26,8 +26,8 @@ func Unpack(s string) string {
 				unpackString.WriteString(temp)
 				startCounter = 0
 			}
-			unpackString.WriteRune(rune(value))
-			lastRune = rune(value)
+			_, _ = unpackString.WriteRune(value)
+			lastRune = value
 		}
 	}
 	if 0 != startCounter {
