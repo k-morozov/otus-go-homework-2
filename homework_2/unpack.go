@@ -39,7 +39,7 @@ func Unpack(s string) string {
 }
 
 func unpackIntervalImpl(s []rune, lastRune rune) string {
-	counter, _ := strconv.ParseInt(string(s[:]), 10, 32)
-	temp := strings.Repeat(string(lastRune), int(counter-1))
+	counter, _ := strconv.Atoi(string(s[:]))
+	temp := strings.Repeat(string(lastRune), counter-1)
 	return temp
 }
