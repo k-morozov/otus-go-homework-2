@@ -2,11 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/k-morozov/otus-go-homework-2/foobar"
+	"log"
+	"time"
 )
 
-func main() {
+func trace(text string) func() {
+	start := time.Now()
+	log.Printf("%s start: %s", text, start)
+	return func() {
+		log.Printf("%s finish", text)
+	}
+}
+
+func bigSlowOperation() {
+	defer trace("bigSlowOperation")()
 	fmt.Println("Hello world!")
-	count := foobar.Count("abcdea", 'a')
-	fmt.Println(count)
+}
+
+func main() {
+	bigSlowOperation()
 }
