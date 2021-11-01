@@ -35,3 +35,43 @@ func (l *List) Front() *Node {
 	}
 	return l.Node
 }
+
+func (l *List) Back() (lastNode *Node) {
+	if nil == l {
+		return
+	}
+
+	lastNode = l.Node
+
+	if nil == lastNode {
+		return
+	}
+
+	currentNode := l.Node
+
+	for nil != currentNode {
+		lastNode = currentNode
+		currentNode = currentNode.Next
+	}
+
+	return
+}
+
+func (l *List) PushBack(value *Node) *Node {
+	if nil == l {
+		return nil
+	}
+
+	lastNode := l.Back()
+
+	if nil != lastNode {
+		lastNode.Next = value
+		value.Prev = lastNode
+	} else {
+		l.Node = value
+	}
+
+	l.count++
+
+	return value
+}
