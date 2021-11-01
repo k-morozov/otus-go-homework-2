@@ -75,3 +75,25 @@ func (l *List) PushBack(value *Node) *Node {
 
 	return value
 }
+
+func (l *List) Remove(node *Node) {
+	if nil == l {
+		return
+	}
+
+	prevNode := node.Prev
+	nextNode := node.Next
+
+	if nil != prevNode && nil != nextNode {
+		prevNode.Next = nextNode
+		nextNode.Prev = prevNode
+	} else if nil != prevNode {
+		prevNode.Next = nil
+	} else if nil != nextNode {
+		nextNode.Prev = nil
+	} else {
+		l.Node = nil
+	}
+
+	l.count--
+}

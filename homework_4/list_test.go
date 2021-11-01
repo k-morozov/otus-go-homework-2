@@ -87,3 +87,89 @@ func TestListSomePushBack(t *testing.T) {
 		node = node.Next
 	}
 }
+
+func TestListRemoveHead(t *testing.T) {
+	list := NewList()
+
+	node := Node{1, nil, nil}
+	list.PushBack(&node)
+
+	expected := 1
+	if list.Size() != expected {
+		t.Fatalf("bad push back: got %v, expected %d", list.Size(), expected)
+	}
+
+	list.Remove(&node)
+	expected = 0
+	if list.Size() != expected {
+		t.Fatalf("bad remove: got %v, expected %d", list.Size(), expected)
+	}
+}
+
+func TestListRemoveTail(t *testing.T) {
+	list := NewList()
+
+	node1 := Node{1, nil, nil}
+	list.PushBack(&node1)
+
+	node2 := Node{2, nil, nil}
+	list.PushBack(&node2)
+
+	expected := 2
+	if list.Size() != expected {
+		t.Fatalf("bad push back: got %v, expected %d", list.Size(), expected)
+	}
+
+	list.Remove(&node2)
+	expected = 1
+	if list.Size() != expected {
+		t.Fatalf("bad remove: got %v, expected %d", list.Size(), expected)
+	}
+
+	if list.Back() == nil {
+		t.Fatalf("bad remove back: got %v", list.Back())
+	}
+
+	expected = 1
+	if list.Back().Value != expected {
+		t.Fatalf("bad remove back: got %v, expected %d", list.Back().Value, expected)
+	}
+}
+
+func TestListRemoveMid(t *testing.T) {
+	list := NewList()
+
+	node1 := Node{1, nil, nil}
+	list.PushBack(&node1)
+
+	node2 := Node{2, nil, nil}
+	list.PushBack(&node2)
+
+	node3 := Node{3, nil, nil}
+	list.PushBack(&node3)
+
+	expected := 3
+	if list.Size() != expected {
+		t.Fatalf("bad push back: got %v, expected %d", list.Size(), expected)
+	}
+
+	list.Remove(&node2)
+	expected = 2
+	if list.Size() != expected {
+		t.Fatalf("bad remove: got %v, expected %d", list.Size(), expected)
+	}
+
+	if list.Back() != &node3 {
+		t.Fatalf("bad remove back: got %v", list.Back())
+	}
+
+	expected = 1
+	if list.Node.Value != expected {
+		t.Fatalf("bad remove front: got %v, expected %d", list.Back().Value, expected)
+	}
+
+	expected = 3
+	if list.Back().Value != expected {
+		t.Fatalf("bad remove back: got %v, expected %d", list.Back().Value, expected)
+	}
+}
