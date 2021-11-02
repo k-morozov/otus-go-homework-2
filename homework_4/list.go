@@ -1,42 +1,51 @@
 package homework_4
 
+type ForwardList interface {
+	Size() int
+	Empty() bool
+	Front() *Node
+	Back() (lastNode *Node)
+	PushBack(value interface{}) *Node
+	Remove(node *Node)
+}
+
 type Node struct {
-	Value int
+	Value interface{}
 	Next  *Node
 	Prev  *Node
 }
 
-type List struct {
+type list struct {
 	Node  *Node
 	count int
 }
 
-func NewList() *List {
-	return &List{}
+func NewList() ForwardList {
+	return &list{}
 }
 
-func (l *List) Size() int {
+func (l *list) Size() int {
 	if nil == l {
 		return 0
 	}
 	return l.count
 }
 
-func (l *List) Empty() bool {
+func (l *list) Empty() bool {
 	if nil == l {
 		return true
 	}
 	return 0 == l.count
 }
 
-func (l *List) Front() *Node {
+func (l *list) Front() *Node {
 	if nil == l {
 		return nil
 	}
 	return l.Node
 }
 
-func (l *List) Back() (lastNode *Node) {
+func (l *list) Back() (lastNode *Node) {
 	if nil == l {
 		return
 	}
@@ -57,7 +66,7 @@ func (l *List) Back() (lastNode *Node) {
 	return
 }
 
-func (l *List) PushBack(value *Node) *Node {
+func (l *list) PushBack(value interface{}) *Node {
 	if nil == l {
 		return nil
 	}
@@ -65,18 +74,19 @@ func (l *List) PushBack(value *Node) *Node {
 	lastNode := l.Back()
 
 	if nil != lastNode {
-		lastNode.Next = value
-		value.Prev = lastNode
+		temp := &Node{Value: value}
+		lastNode.Next = temp
+		temp.Prev = lastNode
 	} else {
-		l.Node = value
+		l.Node = &Node{Value: value}
 	}
 
 	l.count++
 
-	return value
+	return l.Back()
 }
 
-func (l *List) Remove(node *Node) {
+func (l *list) Remove(node *Node) {
 	if nil == l {
 		return
 	}

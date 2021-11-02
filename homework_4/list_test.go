@@ -2,89 +2,118 @@ package homework_4
 
 import "testing"
 
-func TestNewListSize(t *testing.T) {
+func TestNewListEmpty(t *testing.T) {
 	list := NewList()
 
 	expected := 0
 
 	if result := list.Size(); result != expected {
-		t.Fatalf("bad size for new List: got %d, expected %d", result, expected)
+		t.Fatalf("bad size for new list: got %d, expected %d", result, expected)
 	}
-}
-
-func TestNewListEmpty(t *testing.T) {
-	list := NewList()
 
 	if result := list.Empty(); result != true {
-		t.Fatalf("bad empty for new List: got %v, expected %v", result, true)
+		t.Fatalf("bad empty for new list: got %v, expected %v", result, true)
 	}
-}
-
-func TestNewListNodeNil(t *testing.T) {
-	list := NewList()
 
 	if result := list.Front(); nil != result {
-		t.Fatalf("bad front for new List: got %v, expected %v", result, nil)
+		t.Fatalf("bad front for new list: got %v, expected %v", result, nil)
+	}
+
+	if result := list.Back(); nil != result {
+		t.Fatalf("bad back for new list: got %v, expected %v", result, nil)
 	}
 }
 
 func TestListPushBackBasic(t *testing.T) {
 	list := NewList()
-	node := Node{12, nil, nil}
 
-	resultNode := list.PushBack(&node)
+	const expectedValue = 12
+	newNode := list.PushBack(expectedValue)
 
-	if resultNode.Value != node.Value {
-		t.Fatalf("bad push back: got %v, expected %v", resultNode.Value, node.Value)
+	if newNode.Value != expectedValue {
+		t.Fatalf("bad push back(value): got %v, expected %v", newNode.Value, expectedValue)
+	}
+	if newNode.Next != nil {
+		t.Fatalf("bad push back(next): got %v, expected %v", newNode.Next, nil)
+	}
+	if newNode.Prev != nil {
+		t.Fatalf("bad push back(prev): got %v, expected %v", newNode.Prev, nil)
 	}
 
-	expectedSize := 1
+	const expectedSize = 1
 
 	if expectedSize != list.Size() {
 		t.Fatalf("bad push back: got %v, expected %v", list.Size(), expectedSize)
 	}
-}
 
-func TestListBackEmpty(t *testing.T) {
-	list := NewList()
-	resultNode := list.Back()
-
-	if resultNode != nil {
-		t.Fatalf("bad back: got %v, expected %v", resultNode, nil)
+	if result := list.Empty(); result != false {
+		t.Fatalf("bad empty for new list: got %v, expected %v", result, false)
 	}
-}
 
-func TestListPushBackCompareBack(t *testing.T) {
-	list := NewList()
-	node := Node{12, nil, nil}
+	if result := list.Back(); nil == result {
+		t.Fatalf("bad push back(back): got %v, expected %v", result, nil)
+	}
 
-	resultNode := list.PushBack(&node)
-	expectedNode := list.Back()
-
-	if resultNode != expectedNode {
-		t.Fatalf("bad push back and back: got %v, expected %v", resultNode, expectedNode)
+	if result := list.Front(); nil == result {
+		t.Fatalf("bad push back(front): got %v, expected %v", result, nil)
 	}
 }
 
 func TestListSomePushBack(t *testing.T) {
 	list := NewList()
 
-	for i := 0; i < 3; i++ {
-		list.PushBack(&Node{i, nil, nil})
+	const expectedValueFront = 1
+	const expectedValueMid = 2
+	const expectedValueBack = 3
+
+	list.PushBack(expectedValueFront)
+	list.PushBack(expectedValueMid)
+	list.PushBack(expectedValueBack)
+
+	const expectedSize = 3
+
+	if expectedSize != list.Size() {
+		t.Fatalf("bad some push back(size): got %v, expected %v", list.Size(), expectedSize)
 	}
 
-	nodeBack := list.Back()
-
-	if nodeBack == nil {
-		t.Fatalf("bad push back: got %v", nodeBack)
+	if result := list.Front(); result == nil {
+		t.Fatalf("bad some push back(front): got %v", result)
 	}
 
-	node := list.Node
-	for expected := 0; expected < 3; expected++ {
-		if node.Value != expected {
-			t.Fatalf("bad push back: got %v, expected %v", node.Value, expected)
-		}
-		node = node.Next
+	if result := list.Front(); expectedValueFront != result.Value {
+		t.Fatalf("bad some push back(front value): got %v, expected %v", result, expectedValueFront)
+	}
+
+	if result := list.Front().Prev; nil != result {
+		t.Fatalf("bad some push back(front prev): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Front().Next; nil == result {
+		t.Fatalf("bad some push back(front next): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Back(); expectedValueBack != result.Value {
+		t.Fatalf("bad some push back(back value): got %v, expected %v", result, expectedValueBack)
+	}
+
+	if result := list.Back().Next; nil != result {
+		t.Fatalf("bad some push back(back next): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Back().Prev; nil == result {
+		t.Fatalf("bad some push back(back prev): got %v, expected %v", result, expectedValueBack)
+	}
+
+	if list.Front().Next != list.Back().Prev {
+		t.Fatalf("bad some push back(mid): got %v, expected %v", list.Front().Next, list.Back().Prev)
+	}
+
+	if result := list.Back().Prev; expectedValueMid != result.Value {
+		t.Fatalf("bad some push back(back prev value): got %v, expected %v", result, expectedValueMid)
+	}
+
+	if result := list.Front().Next; expectedValueMid != result.Value {
+		t.Fatalf("bad some push back(front next value): got %v, expected %v", result, expectedValueMid)
 	}
 }
 
@@ -109,18 +138,15 @@ func TestListRemoveHead(t *testing.T) {
 func TestListRemoveTail(t *testing.T) {
 	list := NewList()
 
-	node1 := Node{1, nil, nil}
-	list.PushBack(&node1)
-
-	node2 := Node{2, nil, nil}
-	list.PushBack(&node2)
+	list.PushBack(1)
+	node2 := list.PushBack(2)
 
 	expected := 2
 	if list.Size() != expected {
 		t.Fatalf("bad push back: got %v, expected %d", list.Size(), expected)
 	}
 
-	list.Remove(&node2)
+	list.Remove(node2)
 	expected = 1
 	if list.Size() != expected {
 		t.Fatalf("bad remove: got %v, expected %d", list.Size(), expected)
@@ -139,32 +165,27 @@ func TestListRemoveTail(t *testing.T) {
 func TestListRemoveMid(t *testing.T) {
 	list := NewList()
 
-	node1 := Node{1, nil, nil}
-	list.PushBack(&node1)
-
-	node2 := Node{2, nil, nil}
-	list.PushBack(&node2)
-
-	node3 := Node{3, nil, nil}
-	list.PushBack(&node3)
+	list.PushBack(1)
+	node2 := list.PushBack(2)
+	node3 := list.PushBack(3)
 
 	expected := 3
 	if list.Size() != expected {
 		t.Fatalf("bad push back: got %v, expected %d", list.Size(), expected)
 	}
 
-	list.Remove(&node2)
+	list.Remove(node2)
 	expected = 2
 	if list.Size() != expected {
 		t.Fatalf("bad remove: got %v, expected %d", list.Size(), expected)
 	}
 
-	if list.Back() != &node3 {
+	if list.Back() != node3 {
 		t.Fatalf("bad remove back: got %v", list.Back())
 	}
 
 	expected = 1
-	if list.Node.Value != expected {
+	if list.Front().Value != expected {
 		t.Fatalf("bad remove front: got %v, expected %d", list.Back().Value, expected)
 	}
 
