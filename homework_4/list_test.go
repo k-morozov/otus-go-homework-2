@@ -2,10 +2,24 @@ package homework_4
 
 import "testing"
 
+func compare(lhs []int, rhs []int) bool {
+	if len(lhs) != len(rhs) {
+		return false
+	}
+
+	for i := 0; i < len(lhs); i++ {
+		if lhs[i] != rhs[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func TestNewListEmpty(t *testing.T) {
 	list := NewList()
 
-	expected := 0
+	const expected = 0
 
 	if result := list.Size(); result != expected {
 		t.Fatalf("bad size for new list: got %d, expected %d", result, expected)
@@ -115,20 +129,29 @@ func TestListSomePushBack(t *testing.T) {
 	if result := list.Front().Next; expectedValueMid != result.Value {
 		t.Fatalf("bad some push back(front next value): got %v, expected %v", result, expectedValueMid)
 	}
+
+	expected := []int{expectedValueFront, expectedValueMid, expectedValueBack}
+	results := make([]int, 0, list.Size())
+	for node := list.Front(); node != nil; node = node.Next {
+		results = append(results, node.Value.(int))
+	}
+
+	if !compare(expected, results) {
+		t.Fatalf("bad some push back: got %v, expected %v", results, expected)
+	}
 }
 
 func TestListRemoveHead(t *testing.T) {
 	list := NewList()
 
-	node := Node{1, nil, nil}
-	list.PushBack(&node)
+	node := list.PushBack(1)
 
 	expected := 1
 	if list.Size() != expected {
 		t.Fatalf("bad push back: got %v, expected %d", list.Size(), expected)
 	}
 
-	list.Remove(&node)
+	list.Remove(node)
 	expected = 0
 	if list.Size() != expected {
 		t.Fatalf("bad remove: got %v, expected %d", list.Size(), expected)
