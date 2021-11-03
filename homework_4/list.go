@@ -8,6 +8,7 @@ type ForwardList interface {
 	PushFront(value interface{}) *Node
 	PushBack(value interface{}) *Node
 	Remove(node *Node)
+	MoveToFront(node *Node)
 }
 
 type Node struct {
@@ -123,4 +124,36 @@ func (l *list) Remove(node *Node) {
 	}
 
 	l.count--
+}
+
+func (l *list) MoveToFront(node *Node) {
+	if nil == l {
+		return
+	}
+
+	if l.Node == node {
+		return
+	}
+
+	if nil == node.Next {
+		prev := node.Prev
+		prev.Next = nil
+
+		oldHead := l.Node
+		oldHead.Prev = node
+
+		node.Next, node.Prev = oldHead, nil
+		l.Node = node
+		return
+	}
+
+	prev, next := node.Prev, node.Next
+	prev.Next, next.Prev = next, prev
+	node.Prev = nil
+
+	l.Node.Prev = node
+	node.Next = l.Node
+	l.Node = node
+
+	return
 }

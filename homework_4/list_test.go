@@ -320,3 +320,130 @@ func TestListRemoveMid(t *testing.T) {
 		t.Fatalf("bad remove back: got %v, expected %d", list.Back().Value, expected)
 	}
 }
+
+func TestList_MoveToFrontSize1(t *testing.T) {
+	list := NewList()
+
+	const expectedFirst = 100
+
+	moveNode := list.PushBack(expectedFirst)
+
+	list.MoveToFront(moveNode)
+
+	if result := list.Front(); moveNode != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, moveNode)
+	}
+
+	if result := list.Front().Value; expectedFirst != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedFirst)
+	}
+
+	if result := list.Back().Value; expectedFirst != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedFirst)
+	}
+
+	if result := list.Front().Prev; nil != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, nil)
+	}
+}
+
+func TestList_MoveToFrontSize2Begin(t *testing.T) {
+	list := NewList()
+
+	const expectedFirst = 100
+	const expectedSecond = 200
+
+	moveNode := list.PushBack(expectedFirst)
+	list.PushBack(expectedSecond)
+
+	list.MoveToFront(moveNode)
+
+	if result := list.Front(); moveNode != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, moveNode)
+	}
+
+	if result := list.Front().Value; expectedFirst != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedFirst)
+	}
+
+	if result := list.Back().Value; expectedSecond != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedSecond)
+	}
+
+	if result := list.Back().Next; nil != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, nil)
+	}
+}
+
+func TestList_MoveToFrontSize2End(t *testing.T) {
+	list := NewList()
+
+	const expectedFirst = 100
+	const expectedSecond = 200
+
+	list.PushBack(expectedFirst)
+	moveNode := list.PushBack(expectedSecond)
+
+	list.MoveToFront(moveNode)
+
+	if result := list.Front(); moveNode != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, moveNode)
+	}
+
+	if result := list.Front().Value; expectedSecond != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedSecond)
+	}
+
+	if result := list.Back().Value; expectedFirst != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedFirst)
+	}
+
+	if result := list.Front().Prev; nil != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, nil)
+	}
+
+	if result := list.Back().Next; nil != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, nil)
+	}
+}
+
+func TestList_MoveToFrontSize3Mid(t *testing.T) {
+	list := NewList()
+
+	const expectedFirst = 100
+	const expectedSecond = 200
+	const expectedThird = 300
+
+	list.PushBack(expectedFirst)
+	moveNode := list.PushBack(expectedSecond)
+	list.PushBack(expectedThird)
+	list.MoveToFront(moveNode)
+
+	if result := list.Front(); moveNode != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, moveNode)
+	}
+
+	if result := list.Front().Value; expectedSecond != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedSecond)
+	}
+
+	if result := list.Back().Value; expectedThird != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedThird)
+	}
+
+	if result := list.Front().Value; expectedSecond != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedSecond)
+	}
+
+	if result := list.Front().Next.Value; expectedFirst != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedFirst)
+	}
+
+	if result := list.Back().Prev.Value; expectedFirst != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, expectedFirst)
+	}
+
+	if result := list.Front().Prev; nil != result {
+		t.Fatalf("bad some move to front: got %v, expected %v", result, nil)
+	}
+}
