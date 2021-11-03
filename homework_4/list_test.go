@@ -73,6 +73,41 @@ func TestListPushBackBasic(t *testing.T) {
 	}
 }
 
+func TestListPushFrontBasic(t *testing.T) {
+	list := NewList()
+
+	const expectedValue = 12
+	newNode := list.PushFront(expectedValue)
+
+	if newNode.Value != expectedValue {
+		t.Fatalf("bad push front(value): got %v, expected %v", newNode.Value, expectedValue)
+	}
+	if newNode.Next != nil {
+		t.Fatalf("bad push front(next): got %v, expected %v", newNode.Next, nil)
+	}
+	if newNode.Prev != nil {
+		t.Fatalf("bad push front(prev): got %v, expected %v", newNode.Prev, nil)
+	}
+
+	const expectedSize = 1
+
+	if expectedSize != list.Size() {
+		t.Fatalf("bad push front: got %v, expected %v", list.Size(), expectedSize)
+	}
+
+	if result := list.Empty(); result != false {
+		t.Fatalf("bad empty for new list: got %v, expected %v", result, false)
+	}
+
+	if result := list.Back(); nil == result {
+		t.Fatalf("bad push front(back): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Front(); nil == result {
+		t.Fatalf("bad push front(front): got %v, expected %v", result, nil)
+	}
+}
+
 func TestListSomePushBack(t *testing.T) {
 	list := NewList()
 
@@ -138,6 +173,74 @@ func TestListSomePushBack(t *testing.T) {
 
 	if !compare(expected, results) {
 		t.Fatalf("bad some push back: got %v, expected %v", results, expected)
+	}
+}
+
+func TestListSomePushFront(t *testing.T) {
+	list := NewList()
+
+	const expectedValueFront = 1
+	const expectedValueMid = 2
+	const expectedValueBack = 3
+
+	list.PushFront(expectedValueBack)
+	list.PushFront(expectedValueMid)
+	list.PushFront(expectedValueFront)
+
+	const expectedSize = 3
+
+	if expectedSize != list.Size() {
+		t.Fatalf("bad some push front(size): got %v, expected %v", list.Size(), expectedSize)
+	}
+
+	if result := list.Front(); result == nil {
+		t.Fatalf("bad some push front(front): got %v", result)
+	}
+
+	if result := list.Front(); expectedValueFront != result.Value {
+		t.Fatalf("bad some push front(front value): got %v, expected %v", result, expectedValueFront)
+	}
+
+	if result := list.Front().Prev; nil != result {
+		t.Fatalf("bad some push front(front prev): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Front().Next; nil == result {
+		t.Fatalf("bad some push front(front next): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Back(); expectedValueBack != result.Value {
+		t.Fatalf("bad some push front(back value): got %v, expected %v", result, expectedValueBack)
+	}
+
+	if result := list.Back().Next; nil != result {
+		t.Fatalf("bad some push front(back next): got %v, expected %v", result, nil)
+	}
+
+	if result := list.Back().Prev; nil == result {
+		t.Fatalf("bad some push front(back prev): got %v, expected %v", result, expectedValueBack)
+	}
+
+	if list.Front().Next != list.Back().Prev {
+		t.Fatalf("bad some push front(mid): got %v, expected %v", list.Front().Next, list.Back().Prev)
+	}
+
+	if result := list.Back().Prev; expectedValueMid != result.Value {
+		t.Fatalf("bad some push front(back prev value): got %v, expected %v", result, expectedValueMid)
+	}
+
+	if result := list.Front().Next; expectedValueMid != result.Value {
+		t.Fatalf("bad some push front(front next value): got %v, expected %v", result, expectedValueMid)
+	}
+
+	expected := []int{expectedValueFront, expectedValueMid, expectedValueBack}
+	results := make([]int, 0, list.Size())
+	for node := list.Front(); node != nil; node = node.Next {
+		results = append(results, node.Value.(int))
+	}
+
+	if !compare(expected, results) {
+		t.Fatalf("bad some push front: got %v, expected %v", results, expected)
 	}
 }
 

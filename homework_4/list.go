@@ -5,6 +5,7 @@ type ForwardList interface {
 	Empty() bool
 	Front() *Node
 	Back() (lastNode *Node)
+	PushFront(value interface{}) *Node
 	PushBack(value interface{}) *Node
 	Remove(node *Node)
 }
@@ -64,6 +65,22 @@ func (l *list) Back() (lastNode *Node) {
 	}
 
 	return
+}
+
+func (l *list) PushFront(value interface{}) *Node {
+	if nil == l {
+		return nil
+	}
+
+	temp := &Node{Value: value}
+	if nil != l.Node {
+		l.Node.Prev = temp
+	}
+	temp.Next = l.Node
+	l.Node = temp
+
+	l.count++
+	return l.Node
 }
 
 func (l *list) PushBack(value interface{}) *Node {
