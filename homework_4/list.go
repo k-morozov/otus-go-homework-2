@@ -136,17 +136,24 @@ func (l *list) MoveToFront(node *Node) {
 	}
 
 	if nil == node.Next {
-		prev := node.Prev
-		prev.Next = nil
-
-		oldHead := l.Node
-		oldHead.Prev = node
-
-		node.Next, node.Prev = oldHead, nil
-		l.Node = node
-		return
+		l.moveToFrontEndImpl(node)
+	} else {
+		l.moveToFrontMidImpl(node)
 	}
+}
 
+func (l *list) moveToFrontEndImpl(node *Node) {
+	prev := node.Prev
+	prev.Next = nil
+
+	oldHead := l.Node
+	oldHead.Prev = node
+
+	node.Next, node.Prev = oldHead, nil
+	l.Node = node
+}
+
+func (l *list) moveToFrontMidImpl(node *Node) {
 	prev, next := node.Prev, node.Next
 	prev.Next, next.Prev = next, prev
 	node.Prev = nil
@@ -154,6 +161,4 @@ func (l *list) MoveToFront(node *Node) {
 	l.Node.Prev = node
 	node.Next = l.Node
 	l.Node = node
-
-	return
 }
