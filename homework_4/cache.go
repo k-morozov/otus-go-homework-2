@@ -24,6 +24,10 @@ func (c *LruCache) Set(key string, value interface{}) (ok bool) {
 	} else {
 		node = c.elements.PushFront(value)
 		c.mp[key] = node
+		if c.size > c.elements.Size() {
+			node = c.elements.Back()
+			c.elements.Remove(node)
+		}
 	}
 	return
 }

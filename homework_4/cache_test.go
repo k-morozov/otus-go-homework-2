@@ -14,6 +14,7 @@ func TestLruCache_Set(t *testing.T) {
 		key   string
 		value interface{}
 	}
+
 	tests := []struct {
 		name   string
 		fields fields
@@ -46,6 +47,9 @@ func TestLruCache_Set(t *testing.T) {
 			}
 			if value, _ := c.Get(tt.args.key); value != tt.args.value {
 				t.Errorf("Get() = %v, want %v", value, tt.args.value)
+			}
+			if gotOk := c.Set(tt.args.key, tt.args.value); gotOk == tt.wantOk {
+				t.Errorf("Set() = %v, want %v", gotOk, tt.wantOk)
 			}
 		})
 	}
