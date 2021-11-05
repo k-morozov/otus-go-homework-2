@@ -21,8 +21,8 @@ func (c *threadSafeCounterImpl) add() {
 }
 
 func (c *threadSafeCounterImpl) check() bool {
-	defer c.m.Unlock()
 	c.m.Lock()
+	defer c.m.Unlock()
 	if c.counter >= c.maxCountErrors {
 		return false
 	}
