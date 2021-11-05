@@ -2,7 +2,6 @@ package homework_5
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 )
 
@@ -10,51 +9,38 @@ var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
 
 type Task func() error
 
-type threadError struct {
-	m       sync.Mutex
-	er      error
-	counter int
-}
-
-func Run(tasks []Task, countGo, countError int) error {
-	workers := make(chan struct{}, countGo)
+func Run(tasks []Task, maxCountGo, maxCountErrors int) (errorResult error) {
+	workers := make(chan struct{}, maxCountGo)
 	defer close(workers)
 
-	var globalError = threadError{}
-
+	counterErrors := newThreadSafeCounter(maxCountErrors)
 	var wg sync.WaitGroup
 
 	for _, task := range tasks {
-		globalError.m.Lock()
-		if globalError.counter >= countError {
-			globalError.er = ErrErrorsLimitExceeded
-			globalError.m.Unlock()
+		if !counterErrors.check() {
+			errorResult = ErrErrorsLimitExceeded
 			break
 		}
-		globalError.m.Unlock()
 
 		wg.Add(1)
 		workers <- struct{}{}
 
-		go runTask(task, &globalError, func() {
+		go runTask(task, counterErrors, func() {
 			<-workers
 			wg.Done()
 		})
 	}
 
-	fmt.Println("Wait")
 	wg.Wait()
 
-	return globalError.er
+	return errorResult
 }
 
-func runTask(task Task, globalError *threadError, handler func()) {
+func runTask(task Task, counterErrors threadSafeCounter, handler func()) {
 	defer handler()
 
 	err := task()
 	if err != nil {
-		globalError.m.Lock()
-		globalError.counter++
-		globalError.m.Unlock()
+		counterErrors.add()
 	}
 }
