@@ -58,14 +58,35 @@ func TestLruCache_Set(t *testing.T) {
 }
 
 func TestLruCache_Set_One_Go(t *testing.T) {
-	cache := NewCache(10)
+	const maxCount = 10
+	const maxCap = 10
+	cache := NewCache(maxCap)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < maxCount; i++ {
 		key := strconv.Itoa(i)
 		cache.Set(key, i)
 	}
 
-	for i := 0; i < 10; i++ {
+	for i := maxCount - maxCap; i < maxCount; i++ {
+		value := strconv.Itoa(i)
+		expected := i
+		if result, _ := cache.Get(value); expected != result.(int) {
+			t.Fatalf("bad cache: got %v, expected %v", result, expected)
+		}
+	}
+}
+
+func TestLruCache_Set_One_Go_Many(t *testing.T) {
+	const maxCount = 10000000
+	const maxCap = 10
+	cache := NewCache(maxCap)
+
+	for i := 0; i < maxCount; i++ {
+		key := strconv.Itoa(i)
+		cache.Set(key, i)
+	}
+
+	for i := maxCount - maxCap; i < maxCount; i++ {
 		value := strconv.Itoa(i)
 		expected := i
 		if result, _ := cache.Get(value); expected != result.(int) {
@@ -100,26 +121,42 @@ func TestLruCache_Set_Some_Go(t *testing.T) {
 }
 
 func TestLruCache_Set_Many_Go(t *testing.T) {
-	const maxCount = 10000000
-	const maxCap = 10
+	const maxCount = 1000000
+	const maxCap = 1000
+	const maxGoro = 256
 	cache := NewCache(maxCap)
+	goMaxCount := make(chan struct{}, maxGoro)
 
 	wg := &sync.WaitGroup{}
 	for i := 0; i < maxCount; i++ {
 		key := strconv.Itoa(i)
 		wg.Add(1)
+		goMaxCount <- struct{}{}
 		go func(key string, value int) {
 			defer wg.Done()
 			cache.Set(key, value)
+			<-goMaxCount
 		}(key, i)
 	}
 	wg.Wait()
 
 	for i := maxCount - maxCap; i < maxCount; i++ {
-		value := strconv.Itoa(i)
-		expected := i
-		if result, _ := cache.Get(value); expected != result.(int) {
-			t.Fatalf("bad cache(go many): got %v, expected %v", result, expected)
-		}
+		wg.Add(1)
+		goMaxCount <- struct{}{}
+		go func(i int) {
+			defer wg.Done()
+			defer func() {
+				<-goMaxCount
+			}()
+
+			value := strconv.Itoa(i)
+			expected := i
+			if result, _ := cache.Get(value); expected != result.(int) {
+				t.Errorf("bad cache(go many): got %v, expected %v", result, expected)
+				return
+			}
+		}(i)
 	}
+
+	wg.Wait()
 }

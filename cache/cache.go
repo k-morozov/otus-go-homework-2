@@ -12,7 +12,7 @@ type LruCache struct {
 	size     int
 	elements ForwardList
 	mp       map[string]*Node
-	mu       sync.Mutex
+	mu       sync.RWMutex
 }
 
 func NewCache(size int) Cache {
@@ -39,8 +39,8 @@ func (lru *LruCache) Set(key string, value interface{}) (ok bool) {
 }
 
 func (lru *LruCache) Get(key string) (interface{}, bool) {
-	lru.mu.Lock()
-	defer lru.mu.Unlock()
+	lru.mu.RLock()
+	defer lru.mu.RUnlock()
 
 	_, ok := lru.mp[key]
 	if ok {
