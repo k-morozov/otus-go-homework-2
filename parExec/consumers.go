@@ -1,4 +1,4 @@
-package homework_5
+package parExec
 
 import (
 	"errors"

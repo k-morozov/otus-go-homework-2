@@ -1,4 +1,4 @@
-package homework_3
+package frequencyAnalysis
 
 import (
 	"sort"

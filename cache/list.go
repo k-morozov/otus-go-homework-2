@@ -1,4 +1,4 @@
-package homework_4
+package cache
 
 type ForwardList interface {
 	Size() int
@@ -79,6 +79,7 @@ func (l *list) PushFront(value interface{}) *Node {
 	}
 	temp.Next = l.Node
 	l.Node = temp
+	// prev?
 
 	l.count++
 	return l.Node
